@@ -323,7 +323,6 @@
             }
         }
 
-        /* Toast 队列容器 */
         #toastContainer {
             position: fixed;
             top: 20px;
@@ -389,6 +388,7 @@
             overflow-y: auto;
             border: 2px solid #4a6a8a;
             color: #e0e0e0;
+            position: relative;
         }
         .modal h3 {
             text-align: center;
@@ -437,6 +437,47 @@
         .modal .close-btn:hover {
             background: #777;
         }
+
+        .modal-hide-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #555;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .modal-hide-btn:hover {
+            background: #777;
+        }
+
+        .modal-restore-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 300;
+            background: #e67e22;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-restore-btn:hover {
+            background: #f39c12;
+        }
+
         .hero-list {
             display: flex;
             flex-wrap: wrap;
@@ -840,6 +881,40 @@
                 }, 2600);
             }
 
+            // 通用模态隐藏功能
+            function setupModalHiding(overlay, resolveCallback) {
+                // 移除旧的恢复按钮
+                const oldRestore = document.getElementById('modalRestoreBtn');
+                if (oldRestore) oldRestore.remove();
+
+                const modalInner = overlay.querySelector('.modal');
+                const hideBtn = document.createElement('div');
+                hideBtn.className = 'modal-hide-btn';
+                hideBtn.textContent = '−';
+                modalInner.appendChild(hideBtn);
+
+                const restoreBtn = document.createElement('div');
+                restoreBtn.id = 'modalRestoreBtn';
+                restoreBtn.className = 'modal-restore-btn';
+                restoreBtn.textContent = '↖ 恢复选项';
+                document.body.appendChild(restoreBtn);
+                restoreBtn.style.display = 'none';
+
+                hideBtn.onclick = () => {
+                    overlay.style.display = 'none';
+                    restoreBtn.style.display = 'block';
+                };
+                restoreBtn.onclick = () => {
+                    overlay.style.display = 'flex';
+                    restoreBtn.style.display = 'none';
+                };
+
+                const cleanup = () => {
+                    if (restoreBtn.parentNode) restoreBtn.remove();
+                };
+                return cleanup;
+            }
+
             function showChoiceModal(title, choices) {
                 return new Promise(resolve => {
                     let html = '<div class="choices">';
@@ -857,14 +932,19 @@
                                 <button class="close-btn" data-idx="-1">取消</button>
                             </div>
                         </div>`;
+                    const overlay = modalContainer.querySelector('.modal-overlay');
+                    const cleanup = setupModalHiding(overlay, resolve);
+
                     modalContainer.querySelectorAll('.choice-card:not(.disabled)').forEach(card => {
                         card.onclick = function() {
                             modalContainer.innerHTML = '';
+                            cleanup();
                             resolve(parseInt(this.dataset.idx));
                         };
                     });
                     modalContainer.querySelector('.close-btn').onclick = function() {
                         modalContainer.innerHTML = '';
+                        cleanup();
                         resolve(-1);
                     };
                 });
@@ -894,14 +974,19 @@
                                 <button class="close-btn" data-idx="-1">离开商店</button>
                             </div>
                         </div>`;
+                    const overlay = modalContainer.querySelector('.modal-overlay');
+                    const cleanup = setupModalHiding(overlay, resolve);
+
                     modalContainer.querySelectorAll('.shop-item-card').forEach(card => {
                         card.onclick = function() {
                             modalContainer.innerHTML = '';
+                            cleanup();
                             resolve(parseInt(this.dataset.idx));
                         };
                     });
                     modalContainer.querySelector('.close-btn').onclick = function() {
                         modalContainer.innerHTML = '';
+                        cleanup();
                         resolve(-1);
                     };
                 });
@@ -934,14 +1019,19 @@
                                 <button class="close-btn" data-idx="-1">返回</button>
                             </div>
                         </div>`;
+                    const overlay = modalContainer.querySelector('.modal-overlay');
+                    const cleanup = setupModalHiding(overlay, resolve);
+
                     modalContainer.querySelectorAll('.hero-card-item:not(.disabled)').forEach(card => {
                         card.onclick = function() {
                             modalContainer.innerHTML = '';
+                            cleanup();
                             resolve(parseInt(this.dataset.idx));
                         };
                     });
                     modalContainer.querySelector('.close-btn').onclick = function() {
                         modalContainer.innerHTML = '';
+                        cleanup();
                         resolve(-1);
                     };
                 });
@@ -1145,16 +1235,20 @@
             async function actionMenu(extraPhase) {
                 while (true) {
                     renderAll();
+                    const canBuyHero = !(game.red === 0 && game.blue === 0);
+                    const canEnterShop = game.coin >= 2;
                     const choices = [
-                        { label: '🏪 进入骰面商店', disabled: false },
-                        { label: '🦸 购买英雄卡牌', disabled: false },
+                        { label: '🏪 进入骰面商店', disabled: !canEnterShop },
+                        { label: '🦸 购买英雄卡牌', disabled: !canBuyHero },
                         { label: extraPhase ? '⏭️ 跳过（返还2红色资源）' : '⏭️ 跳过', disabled: false },
                     ];
                     const ch = await showChoiceModal(extraPhase ? '额外行动阶段' : '主要行动阶段', choices);
                     if (ch === 0) {
+                        if (!canEnterShop) continue;
                         await enterShop();
                         return true;
                     } else if (ch === 1) {
+                        if (!canBuyHero) continue;
                         await buyHero();
                         return true;
                     } else {
@@ -1323,6 +1417,9 @@
             async function endGame() {
                 game.phase = '游戏结束';
                 renderAll();
+                // 清除可能残留的恢复按钮
+                const oldRestore = document.getElementById('modalRestoreBtn');
+                if (oldRestore) oldRestore.remove();
                 await showBanner('游戏结束！');
                 await sleep(500);
                 let totalScore = game.score;
