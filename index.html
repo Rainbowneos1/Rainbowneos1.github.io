@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>骰子英雄 - 双骰策略游戏</title>
+    <style>
+        :root {
+            --bg: #252540;
+            --panel-bg: #1e2a40;
+            --card-bg: #1a3250;
+            --gold: #f0c040;
+            --score-green: #2d7d3a;
+            --score-green-light: #4caf50;
+            --red-resource: #f4a4a4;
+            --blue-resource: #3050a0;
+            --text: #e0e0e0;
+            --highlight: #ffeb3b;
+            --border: #3a3a5c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+            user-select: none;
+        }
+
+        .game-container {
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 12px 18px;
+            border: 1px solid var(--border);
+        }
+        .top-bar .turn-info {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .top-bar .phase-badge {
+            background: #e67e22;
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+        .top-bar .score-display {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--score-green-light);
+            white-space: nowrap;
+        }
+
+        .resources-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+        .resource-red {
+            background: #5c2020;
+            color: #f4a4a4;
+        }
+        .resource-blue {
+            background: #1a2a50;
+            color: #8098e0;
+        }
+        .resource-coin {
+            background: #4a3800;
+            color: #f0c040;
+        }
+        .resource-hammer {
+            background: #3a3040;
+            color: #c0a0d0;
+        }
+        .resource-cap {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        .resource-value {
+            font-size: 1.2em;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .dice-area {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .dice-column {
+            flex: 1;
+            min-width: 280px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border);
+        }
+        .dice-column h3 {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            letter-spacing: 2px;
+        }
+        .dice-faces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .dice-face-wrapper {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .dice-face-wrapper:hover {
+            transform: scale(1.06);
+        }
+        .dice-face-wrapper.rolled {
+            outline: 3px solid #e74c3c;
+            outline-offset: 3px;
+            animation: pulse-red 0.35s ease-in-out 3;
+            z-index: 5;
+        }
+        @keyframes pulse-red {
+            0%,
+            100% {
+                outline-color: #e74c3c;
+                box-shadow: 0 0 8px 2px rgba(231, 76, 60, 0.5);
+            }
+            50% {
+                outline-color: #ff6b6b;
+                box-shadow: 0 0 20px 6px rgba(255, 107, 107, 1);
+            }
+        }
+        .dice-face-wrapper.selectable {
+            outline: 3px dashed #ffeb3b;
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        .face-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1em;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #000;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .face-circle.small {
+            width: 34px;
+            height: 34px;
+            font-size: 0.7em;
+            border-width: 1.5px;
+        }
+        .face-circle.coin-face {
+            background: var(--gold);
+            color: #000;
+            border-color: #a07000;
+        }
+        .face-circle.score-face {
+            background: var(--score-green);
+            color: #fff;
+            border-color: #1a5a20;
+        }
+        .face-circle.red-face {
+            background: var(--red-resource);
+            color: #000;
+            border-color: #b05050;
+        }
+        .face-circle.blue-face {
+            background: var(--blue-resource);
+            color: #fff;
+            border-color: #1a3070;
+        }
+        .face-square {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            background: #111;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            border: 2px solid #555;
+            letter-spacing: 2px;
+        }
+        .face-multi,
+        .face-choice-grid,
+        .face-diag {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+        }
+        .face-multi {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px;
+        }
+        .face-multi .face-circle.small {
+            width: 22px;
+            height: 22px;
+            font-size: 0.55em;
+        }
+        .face-choice-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px;
+        }
+        .face-choice-grid .face-circle.small {
+            width: 22px;
+            height: 22px;
+            font-size: 0.5em;
+        }
+        .question-circle {
+            background: #222;
+            color: #fff;
+            border-color: #666;
+            font-size: 0.9em;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .face-diag {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1px;
+            transform: rotate(-15deg);
+        }
+        .face-diag .face-circle.small {
+            width: 28px;
+            height: 28px;
+            font-size: 0.6em;
+        }
+
+        .banner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            pointer-events: none;
+            animation: fadeInOut 1.2s ease forwards;
+        }
+        .banner-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 200, 50, 0.9);
+            letter-spacing: 4px;
+        }
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Toast 队列容器 */
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast-item {
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 24px;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+            pointer-events: auto;
+            white-space: nowrap;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        .modal {
+            background: #243045;
+            border-radius: 16px;
+            padding: 20px 24px;
+            max-width: 700px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid #4a6a8a;
+            color: #e0e0e0;
+        }
+        .modal h3 {
+            text-align: center;
+            margin-bottom: 12px;
+            color: #fff;
+            font-size: 1.3em;
+        }
+        .modal .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .modal .choice-card {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            min-width: 70px;
+        }
+        .modal .choice-card:hover {
+            border-color: #ffeb3b;
+            background: #1a3a5a;
+        }
+        .modal .choice-card.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+            border-color: #555;
+            background: #1e2a3a;
+        }
+        .modal .close-btn {
+            display: block;
+            margin: 14px auto 0;
+            padding: 8px 28px;
+            border-radius: 20px;
+            background: #555;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .modal .close-btn:hover {
+            background: #777;
+        }
+        .hero-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .hero-card-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-card-item:hover {
+            border-color: #ffeb3b;
+        }
+        .hero-card-item.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            border-color: #444;
+            background: #1a2030;
+        }
+
+        @media (max-width: 700px) {
+            .face-circle {
+                width: 38px;
+                height: 38px;
+                font-size: 0.75em;
+            }
+            .face-circle.small {
+                width: 24px;
+                height: 24px;
+                font-size: 0.55em;
+            }
+            .face-square {
+                width: 38px;
+                height: 38px;
+                font-size: 1em;
+            }
+            .face-multi,
+            .face-choice-grid {
+                width: 38px;
+                height: 38px;
+            }
+            .face-multi .face-circle.small,
+            .face-choice-grid .face-circle.small {
+                width: 16px;
+                height: 16px;
+                font-size: 0.4em;
+            }
+            .face-diag {
+                width: 36px;
+                height: 36px;
+            }
+            .face-diag .face-circle.small {
+                width: 20px;
+                height: 20px;
+                font-size: 0.5em;
+            }
+            .banner-text {
+                font-size: 1.5em;
+            }
+            .dice-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="gameContainer"></div>
+    <div id="bannerContainer"></div>
+    <div id="modalContainer"></div>
+    <div id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ==================== 数据定义 ====================
+            const FACES = {
+                '1红': { name: '1红', type: 'simple', data: { red: 1 }, coin: false },
+                '1蓝': { name: '1蓝', type: 'simple', data: { blue: 1 }, coin: false },
+                '2分': { name: '2分', type: 'simple', data: { score: 2 }, coin: false },
+                '1金币': { name: '1金币', type: 'simple', data: { coin: 1 }, coin: true },
+                '3金币': { name: '3金币', type: 'simple', data: { coin: 3 }, coin: true },
+                '1蓝色资源': { name: '1蓝色资源', type: 'simple', data: { blue: 1 }, coin: false },
+                '4金币': { name: '4金币', type: 'simple', data: { coin: 4 }, coin: true },
+                '1红色资源': { name: '1红色资源', type: 'simple', data: { red: 1 }, coin: false },
+                '2分数+2金币': { name: '2分数+2金币', type: 'simple', data: { score: 2, coin: 2 }, coin: true },
+                '2蓝色资源': { name: '2蓝色资源', type: 'simple', data: { blue: 2 }, coin: false },
+                '2红色资源': { name: '2红色资源', type: 'simple', data: { red: 2 }, coin: false },
+                '4分': { name: '4分', type: 'simple', data: { score: 4 }, coin: false },
+                '6金币': { name: '6金币', type: 'simple', data: { coin: 6 }, coin: true },
+                '1红色资源+1分': { name: '1红色资源+1分', type: 'simple', data: { red: 1, score: 1 }, coin: false },
+                '1蓝色资源+2金币': { name: '1蓝色资源+2金币', type: 'simple', data: { blue: 1, coin: 2 }, coin: true },
+                '三选一(1)': { name: '三选一：1红/1蓝/1金币', type: 'choice', data: [{ red: 1 }, { blue: 1 }, { coin: 1 }],
+                    coin: true },
+                '1红+1蓝+1分+1金币': { name: '1红+1蓝+1分+1金币', type: 'simple', data: { red: 1, blue: 1, score: 1,
+                        coin: 1 }, coin: true },
+                '2蓝+2分': { name: '2蓝+2分', type: 'simple', data: { blue: 2, score: 2 }, coin: false },
+                '6分': { name: '6分', type: 'simple', data: { score: 6 }, coin: false },
+                '三选一(2)': { name: '三选一：2红/2蓝/2金币', type: 'choice', data: [{ red: 2 }, { blue: 2 }, { coin: 2 }],
+                    coin: true },
+                '三倍': { name: '三倍', type: 'triple', data: null, coin: false },
+            };
+
+            const SHOP_ITEMS = [
+                { face: '3金币', price: 2, limited: false }, { face: '1蓝色资源', price: 2, limited: false },
+                { face: '4金币', price: 3, limited: false }, { face: '1红色资源', price: 3, limited: false },
+                { face: '2分数+2金币', price: 5, limited: false }, { face: '2蓝色资源', price: 6, limited: false },
+                { face: '2红色资源', price: 8, limited: false }, { face: '4分', price: 8, limited: false },
+                { face: '6金币', price: 4, limited: true }, { face: '1红色资源+1分', price: 4, limited: true },
+                { face: '1蓝色资源+2金币', price: 4, limited: true }, { face: '三选一(1)', price: 4, limited: true },
+                { face: '1红+1蓝+1分+1金币', price: 12, limited: true }, { face: '2蓝+2分', price: 12, limited: true },
+                { face: '6分', price: 12, limited: true }, { face: '三选一(2)', price: 12, limited: true },
+            ];
+
+            const HEROES = [
+                { name: '长老', cost: { red: 1 }, score: 0, effect: 'support', id: 'elder' },
+                { name: '野灵', cost: { red: 1 }, score: 2, effect: 'immediate', id: 'wild_spirit' },
+                { name: '猫头鹰', cost: { red: 2 }, score: 4, effect: 'support', id: 'owl' },
+                { name: '米诺陶', cost: { red: 3 }, score: 11, effect: 'none', id: 'minotaur' },
+                { name: '戈尔贡', cost: { red: 4 }, score: 14, effect: 'none', id: 'gorgon' },
+                { name: '深渊之镜', cost: { red: 5 }, score: 16, effect: 'none', id: 'abyss' },
+                { name: '斯芬克斯', cost: { red: 6 }, score: 10, effect: 'immediate', id: 'sphinx' },
+                { name: '九头蛇', cost: { red: 5, blue: 5 }, score: 26, effect: 'none', id: 'hydra' },
+                { name: '巨蟹', cost: { blue: 6 }, score: 8, effect: 'immediate', id: 'crab' },
+                { name: '隐形头盔', cost: { blue: 5 }, score: 4, effect: 'immediate', id: 'helm' },
+                { name: '船夫', cost: { blue: 4 }, score: 12, effect: 'none', id: 'ferryman' },
+                { name: '萨提尔', cost: { blue: 3 }, score: 10, effect: 'none', id: 'satyr' },
+                { name: '银鹿', cost: { blue: 2 }, score: 2, effect: 'support', id: 'deer' },
+                { name: '宝箱', cost: { blue: 1 }, score: 2, effect: 'immediate', id: 'chest' },
+                { name: '锤子', cost: { blue: 1 }, score: 0, effect: 'immediate', id: 'hammer' },
+            ];
+
+            // ==================== 游戏状态 ====================
+            class GameState {
+                constructor() {
+                    const pool = ['1红', '1蓝', '2分', ...Array(9).fill('1金币')];
+                    shuffle(pool);
+                    this.leftDie = pool.slice(0, 6).map(n => FACES[n]);
+                    this.rightDie = pool.slice(6, 12).map(n => FACES[n]);
+                    this.red = 0;
+                    this.blue = 0;
+                    this.coin = 0;
+                    this.score = 0;
+                    this.redCap = 6;
+                    this.blueCap = 6;
+                    this.coinCap = 12;
+                    this.hammerTrack = 0;
+                    this.hammerCap = 0;
+                    this.turn = 1;
+                    this.phase = '准备';
+                    this.heroesBought = [];
+                    this.limitedBought = new Set();
+                    this.supportPool = [];
+                }
+                hasHammer() { return this.hammerCap > 0; }
+                addHammer(amount) {
+                    if (amount <= 0 || !this.hasHammer()) return;
+                    const old = this.hammerTrack;
+                    const nw = Math.min(this.hammerTrack + amount, this.hammerCap);
+                    if (nw === old) return;
+                    this.hammerTrack = nw;
+                    for (let k = 1; k * 15 <= this.hammerCap; k++) {
+                        const th = k * 15;
+                        if (old < th && nw >= th) {
+                            const pts = (k % 2 === 1) ? 10 : 15;
+                            this.score += pts;
+                            showToast(`🔨 锤子达到${th}，获得${pts}分！`);
+                        }
+                    }
+                }
+                gainResources(resDict, hammerChoice = 0) {
+                    const gained = { red: 0, blue: 0, coin: 0, score: 0, hammer: 0 };
+                    for (const [res, val] of Object.entries(resDict)) {
+                        if (val === 0) continue;
+                        if (res === 'coin') continue;
+                        if (res === 'red') { const a = Math.min(val, this.redCap - this.red);
+                            this.red += a;
+                            gained.red = a; } else if (res === 'blue') { const a = Math.min(val, this.blueCap - this
+                                .blue);
+                            this.blue += a;
+                            gained.blue = a; } else if (res === 'score') { this.score += val;
+                            gained.score = val; }
+                    }
+                    if (resDict.coin && resDict.coin > 0) {
+                        const cv = resDict.coin;
+                        const conv = Math.min(hammerChoice, cv, this.hammerCap - this.hammerTrack);
+                        this.addHammer(conv);
+                        const rem = cv - conv;
+                        const addC = Math.min(rem, this.coinCap - this.coin);
+                        this.coin += addC;
+                        gained.coin = addC;
+                        gained.hammer = conv;
+                    }
+                    return gained;
+                }
+                canPay(cost) {
+                    const rc = cost.red || 0;
+                    const bc = cost.blue || 0;
+                    const cc = cost.coin || 0;
+                    return this.red >= rc && this.blue >= bc && this.coin >= cc;
+                }
+                payCost(cost) {
+                    if (!this.canPay(cost)) return false;
+                    const rc = cost.red || 0;
+                    const bc = cost.blue || 0;
+                    const cc = cost.coin || 0;
+                    this.red -= rc;
+                    this.blue -= bc;
+                    this.coin -= cc;
+                    return true;
+                }
+                isFaceChoice(face) {
+                    if (face.type === 'choice') return true;
+                    if (face.coin && this.hasHammer()) return true;
+                    return false;
+                }
+                getSupportAbilities() {
+                    const map = {};
+                    for (const hn of this.supportPool) {
+                        map[hn] = (map[hn] || 0) + 1;
+                    }
+                    return map;
+                }
+            }
+
+            function shuffle(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+            }
+
+            const gameContainer = document.getElementById('gameContainer');
+            const bannerContainer = document.getElementById('bannerContainer');
+            const modalContainer = document.getElementById('modalContainer');
+            const toastContainer = document.getElementById('toastContainer');
+            let game = new GameState();
+            let rolledHighlightTimeout = null;
+
+            function renderResourceCircle(data, isSmall = false, sz = 'small') {
+                const k = Object.keys(data)[0];
+                const v = data[k];
+                let cls = 'face-circle';
+                if (isSmall) {
+                    if (sz === 'tiny') cls += ' small';
+                    else if (sz === 'xsmall') cls += ' small';
+                    else cls += ' small';
+                }
+                if (k === 'coin') { cls += ' coin-face'; } else if (k === 'score') { cls += ' score-face'; } else if (k ===
+                    'red') { cls += ' red-face'; } else if (k === 'blue') { cls += ' blue-face'; }
+                let text = '';
+                if (k === 'coin') text = v + '金';
+                else if (k === 'score') text = v + '分';
+                else if (k === 'red') text = v + '红';
+                else if (k === 'blue') text = v + '蓝';
+                else text = v;
+                if (isSmall && (sz === 'tiny' || sz === 'xsmall')) text = v;
+                return `<div class="${cls}">${text}</div>`;
+            }
+
+            function renderFaceHTML(face, size = 'normal') {
+                if (face.type === 'triple') {
+                    const w = size === 'small' ? '34px' : '52px';
+                    const h = size === 'small' ? '34px' : '52px';
+                    const fs = size === 'small' ? '0.9em' : '1.3em';
+                    return `<div class="face-square" style="width:${w};height:${h};font-size:${fs};">X3</div>`;
+                }
+                if (face.type === 'choice') {
+                    const opts = face.data;
+                    const items = opts.map(opt => renderResourceCircle(opt, true));
+                    items.push(
+                        '<div class="question-circle" style="width:22px;height:22px;font-size:0.55em;">?</div>');
+                    const w = size === 'small' ? '34px' : '52px';
+                    const h = size === 'small' ? '34px' : '52px';
+                    return `<div class="face-choice-grid" style="width:${w};height:${h};">${items.join('')}</div>`;
+                }
+                const data = face.data;
+                const keys = Object.keys(data);
+                if (keys.length === 1) {
+                    return renderResourceCircle(data, false, size);
+                }
+                if (keys.length === 2) {
+                    const w = size === 'small' ? '30px' : '48px';
+                    const h = size === 'small' ? '30px' : '48px';
+                    let html = `<div class="face-diag" style="width:${w};height:${h};">`;
+                    html += `<div class="tl">${renderResourceCircle({[keys[0]]:data[keys[0]]},true,'xsmall')}</div>`;
+                    html +=
+                        `<div class="br">${renderResourceCircle({[keys[1]]:data[keys[1]]},true,'xsmall')}</div>`;
+                    html += '</div>';
+                    return html;
+                }
+                if (keys.length >= 4) {
+                    const w = size === 'small' ? '34px' : '52px';
+                    const h = size === 'small' ? '34px' : '52px';
+                    let html = `<div class="face-multi" style="width:${w};height:${h};">`;
+                    for (const k of keys) {
+                        html += renderResourceCircle({ [k]: data[k] }, true, 'tiny');
+                    }
+                    html += '</div>';
+                    return html;
+                }
+                return '<div class="face-circle">?</div>';
+            }
+
+            function renderAll() {
+                let html = '';
+                html += `<div class="top-bar">
+                    <span class="turn-info">📅 第 ${game.turn}/9 回合</span>
+                    <span class="phase-badge">📌 ${game.phase}</span>
+                    <span class="score-display">⭐ 分数：${game.score}</span>
+                </div>`;
+                html += `<div class="resources-panel">
+                    <span class="resource-item resource-red">🔴 红色：<span class="resource-value">${game.red}</span><span class="resource-cap">/${game.redCap}</span></span>
+                    <span class="resource-item resource-blue">🔵 蓝色：<span class="resource-value">${game.blue}</span><span class="resource-cap">/${game.blueCap}</span></span>
+                    <span class="resource-item resource-coin"> 💰 金币：<span class="resource-value">${game.coin}</span><span class="resource-cap">/${game.coinCap}</span></span>
+                    ${game.hasHammer() ? `<span class="resource-item resource-hammer">🔨 锤子：<span class="resource-value">${game.hammerTrack}</span><span class="resource-cap">/${game.hammerCap}</span></span>` : ''}
+                </div>`;
+                html += `<div class="dice-area">
+                    <div class="dice-column">
+                        <h3>🎲 左骰子</h3>
+                        <div class="dice-faces" id="leftDiceFaces">
+                            ${game.leftDie.map((f,i)=>`<div class="dice-face-wrapper" data-die="left" data-idx="${i}" id="lw${i}">${renderFaceHTML(f)}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="dice-column">
+                        <h3>🎲 右骰子</h3>
+                        <div class="dice-faces" id="rightDiceFaces">
+                            ${game.rightDie.map((f,i)=>`<div class="dice-face-wrapper" data-die="right" data-idx="${i}" id="rw${i}">${renderFaceHTML(f)}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>`;
+                const supAb = game.getSupportAbilities();
+                const supStr = Object.keys(supAb).length > 0 ? Object.entries(supAb).map(([n, c]) => `${n}×${c}`).join(
+                    ', ') : '无';
+                html +=
+                    `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🛡️ 可用支援能力：<b>${supStr}</b></div>`;
+                if (game.heroesBought.length > 0) {
+                    html +=
+                        `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🏆 已购买英雄：${game.heroesBought.join(' → ')}</div>`;
+                }
+                html += `<div class="action-buttons" id="actionButtons"></div>`;
+                gameContainer.innerHTML = html;
+            }
+
+            function highlightRolledFace(die, idx) {
+                const prefix = die === 'left' ? 'lw' : 'rw';
+                const el = document.getElementById(prefix + idx);
+                if (el) {
+                    el.classList.add('rolled');
+                    if (rolledHighlightTimeout) clearTimeout(rolledHighlightTimeout);
+                    rolledHighlightTimeout = setTimeout(() => {
+                        document.querySelectorAll('.dice-face-wrapper.rolled').forEach(e => e.classList
+                            .remove('rolled'));
+                    }, 800);
+                }
+            }
+
+            function clearRolledHighlights() {
+                document.querySelectorAll('.dice-face-wrapper.rolled').forEach(e => e.classList.remove('rolled'));
+            }
+
+            function setSelectableMode(enabled, callback) {
+                document.querySelectorAll('.dice-face-wrapper').forEach(el => {
+                    if (enabled) {
+                        el.classList.add('selectable');
+                        el.onclick = function() {
+                            const die = el.dataset.die;
+                            const idx = parseInt(el.dataset.idx);
+                            callback(die, idx);
+                        };
+                    } else {
+                        el.classList.remove('selectable');
+                        el.onclick = null;
+                    }
+                });
+            }
+
+            function showBanner(text) {
+                bannerContainer.innerHTML = `<div class="banner-overlay"><div class="banner-text">${text}</div></div>`;
+                return new Promise(resolve => setTimeout(() => {
+                    bannerContainer.innerHTML = '';
+                    resolve();
+                }, 1200));
+            }
+
+            function showToast(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'toast-item';
+                toast.textContent = msg;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 2600);
+            }
+
+            function showChoiceModal(title, choices) {
+                return new Promise(resolve => {
+                    let html = '<div class="choices">';
+                    choices.forEach((c, i) => {
+                        const disabledClass = c.disabled ? ' disabled' : '';
+                        html +=
+                            `<div class="choice-card${disabledClass}" data-idx="${i}" style="cursor:pointer;">${c.label}</div>`;
+                    });
+                    html += '</div>';
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal">
+                                <h3>${title}</h3>
+                                ${html}
+                                <button class="close-btn" data-idx="-1">取消</button>
+                            </div>
+                        </div>`;
+                    modalContainer.querySelectorAll('.choice-card:not(.disabled)').forEach(card => {
+                        card.onclick = function() {
+                            modalContainer.innerHTML = '';
+                            resolve(parseInt(this.dataset.idx));
+                        };
+                    });
+                    modalContainer.querySelector('.close-btn').onclick = function() {
+                        modalContainer.innerHTML = '';
+                        resolve(-1);
+                    };
+                });
+            }
+
+            function showShopModal(availableItems) {
+                return new Promise(resolve => {
+                    let html = '<div class="choices" style="flex-direction:column;align-items:stretch;">';
+                    availableItems.forEach((item, i) => {
+                        const face = FACES[item.face];
+                        html += `
+                            <div class="choice-card shop-item-card" data-idx="${i}" style="display:flex;align-items:center;gap:14px;cursor:pointer;padding:10px 16px;">
+                                <div style="flex-shrink:0;">${renderFaceHTML(face,'small')}</div>
+                                <div style="flex:1;text-align:left;">
+                                    <b>${face.name}</b>
+                                    <span style="color:#f0c040;margin-left:8px;">💰${item.price}金币</span>
+                                    ${item.limited?'<span style="color:#e74c3c;margin-left:4px;">[限购]</span>':''}
+                                </div>
+                            </div>`;
+                    });
+                    html += '</div>';
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal" style="max-width:600px;">
+                                <h3>🏪 骰面商店</h3>
+                                ${html}
+                                <button class="close-btn" data-idx="-1">离开商店</button>
+                            </div>
+                        </div>`;
+                    modalContainer.querySelectorAll('.shop-item-card').forEach(card => {
+                        card.onclick = function() {
+                            modalContainer.innerHTML = '';
+                            resolve(parseInt(this.dataset.idx));
+                        };
+                    });
+                    modalContainer.querySelector('.close-btn').onclick = function() {
+                        modalContainer.innerHTML = '';
+                        resolve(-1);
+                    };
+                });
+            }
+
+            function showHeroModal() {
+                return new Promise(resolve => {
+                    let html = '<div class="hero-list">';
+                    HEROES.forEach((hero, i) => {
+                        const costStr = Object.entries(hero.cost).map(([k, v]) => {
+                            const icons = { red: '🔴', blue: '🔵', coin: ' 💰' };
+                            return `${icons[k]||''}${v}${k==='red'?'红':k==='blue'?'蓝':'金币'}`;
+                        }).join('+');
+                        const boughtCount = game.heroesBought.filter(h => h === hero.name).length;
+                        const canAfford = game.canPay(hero.cost);
+                        const disabledClass = canAfford ? '' : ' disabled';
+                        html += `
+                            <div class="hero-card-item choice-card${disabledClass}" data-idx="${i}" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:10px 14px;">
+                                <b style="min-width:70px;">${hero.name}</b>
+                                <span style="flex:1;text-align:left;">费用:${costStr} | ⭐${hero.score}分 | ${hero.effect==='support'?'支援':hero.effect==='immediate'?'立即':'无'} ${boughtCount>0?'(已购'+boughtCount+')':''}</span>
+                                ${!canAfford ? '<span style="color:#e74c3c;margin-left:auto;">资源不足</span>' : ''}
+                            </div>`;
+                    });
+                    html += '</div>';
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal" style="max-width:650px;">
+                                <h3>🦸 购买英雄卡牌</h3>
+                                ${html}
+                                <button class="close-btn" data-idx="-1">返回</button>
+                            </div>
+                        </div>`;
+                    modalContainer.querySelectorAll('.hero-card-item:not(.disabled)').forEach(card => {
+                        card.onclick = function() {
+                            modalContainer.innerHTML = '';
+                            resolve(parseInt(this.dataset.idx));
+                        };
+                    });
+                    modalContainer.querySelector('.close-btn').onclick = function() {
+                        modalContainer.innerHTML = '';
+                        resolve(-1);
+                    };
+                });
+            }
+
+            async function resolveFace(face, multiplier = 1, sourceDesc = '') {
+                if (face.type === 'triple') return;
+                let resData;
+                if (face.type === 'choice') {
+                    const choices = face.data;
+                    const labels = choices.map((opt, i) => {
+                        const parts = Object.entries(opt).map(([k, v]) => {
+                            const icons = { red: '🔴', blue: '🔵', coin: ' 💰', score: '⭐' };
+                            return `${icons[k]||''}${v}${k==='red'?'红':k==='blue'?'蓝':k==='coin'?'金币':'分'}`;
+                        }).join('+');
+                        return { label: `选项${i+1}: ${parts}${multiplier>1?' ×'+multiplier:''}` };
+                    });
+                    const ch = await showChoiceModal(`选择收获 (${face.name}${multiplier>1?' ×'+multiplier:''})`, labels);
+                    if (ch < 0) { resData = { ...face.data[0] }; } else { resData = { ...face.data[ch] }; }
+                } else {
+                    resData = { ...face.data };
+                }
+                if (multiplier !== 1) {
+                    for (const k in resData) resData[k] *= multiplier;
+                }
+                await gainResourcesInteractive(resData, sourceDesc || face.name);
+            }
+
+            async function gainResourcesInteractive(resDict, sourceDesc = '') {
+                let hammerChoice = 0;
+                if (resDict.coin && resDict.coin > 0 && game.hasHammer()) {
+                    const cv = resDict.coin;
+                    const maxConv = Math.min(cv, game.hammerCap - game.hammerTrack);
+                    if (maxConv > 0) {
+                        const ch = await showChoiceModal(
+                            `💰 获得${cv}金币 (${sourceDesc})，可将最多${maxConv}转换为锤子`,
+                            Array.from({ length: maxConv + 1 }, (_, i) => ({ label: `转换 ${i} 金币为锤子 🔨` }))
+                        );
+                        hammerChoice = (ch >= 0) ? ch : 0;
+                    }
+                }
+                const gained = game.gainResources(resDict, hammerChoice);
+                let msgParts = [];
+                if (gained.red) msgParts.push(`🔴+${gained.red}`);
+                if (gained.blue) msgParts.push(`🔵+${gained.blue}`);
+                if (gained.coin) msgParts.push(` 💰+${gained.coin}`);
+                if (gained.score) msgParts.push(`⭐+${gained.score}`);
+                if (gained.hammer) msgParts.push(`🔨+${gained.hammer}`);
+                if (msgParts.length > 0) showToast(`获得: ${msgParts.join(' ')}`);
+            }
+
+            async function rollBothDice(rollNum) {
+                const lf = game.leftDie[Math.floor(Math.random() * 6)];
+                const rf = game.rightDie[Math.floor(Math.random() * 6)];
+                const lIdx = game.leftDie.indexOf(lf);
+                const rIdx = game.rightDie.indexOf(rf);
+                clearRolledHighlights();
+                highlightRolledFace('left', lIdx);
+                highlightRolledFace('right', rIdx);
+                renderAll();
+                showToast(`🎲 第${rollNum}次投掷：左 ${lf.name}　右 ${rf.name}`);
+                await sleep(700);
+                const faces = [lf, rf];
+                const tripleIdxs = faces.map((f, i) => f.type === 'triple' ? i : -1).filter(i => i >= 0);
+                if (tripleIdxs.length === 2) {
+                    showToast('两个三倍，无收获');
+                } else if (tripleIdxs.length === 1) {
+                    const other = faces[1 - tripleIdxs[0]];
+                    showToast(`三倍触发！${other.name} ×3`);
+                    await resolveFace(other, 3);
+                } else {
+                    const leftChoice = game.isFaceChoice(lf);
+                    const rightChoice = game.isFaceChoice(rf);
+                    if (!leftChoice && !rightChoice) {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    } else if (!leftChoice && rightChoice) {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    } else if (leftChoice && !rightChoice) {
+                        await resolveFace(rf, 1);
+                        await resolveFace(lf, 1);
+                    } else {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    }
+                }
+                clearRolledHighlights();
+                renderAll();
+            }
+
+            async function executeSupport(abilityName) {
+                if (abilityName === '长老') {
+                    if (game.coin < 3) {
+                        showToast('金币不足3，无法发动长老');
+                        return false;
+                    }
+                    game.coin -= 3;
+                    game.score += 4;
+                    showToast('长老：支付3金币，获得4分');
+                } else if (abilityName === '银鹿') {
+                    const ch = await showChoiceModal('银鹿：选择骰子', [
+                        { label: '左骰子' }, { label: '右骰子' }
+                    ]);
+                    if (ch < 0) return false;
+                    const die = ch === 0 ? game.leftDie : game.rightDie;
+                    const face = die[Math.floor(Math.random() * 6)];
+                    const idx = die.indexOf(face);
+                    const dieName = ch === 0 ? 'left' : 'right';
+                    highlightRolledFace(dieName, idx);
+                    renderAll();
+                    await sleep(500);
+                    showToast(`银鹿投掷：${face.name}`);
+                    await resolveFace(face, 1);
+                    clearRolledHighlights();
+                } else if (abilityName === '猫头鹰') {
+                    const ch = await showChoiceModal('猫头鹰：选择资源', [
+                        { label: '🔴 1红色资源' }, { label: '🔵 1蓝色资源' }, { label: ' 💰 1金币' }
+                    ]);
+                    if (ch < 0) return false;
+                    const resMap = [{ red: 1 }, { blue: 1 }, { coin: 1 }][ch];
+                    await gainResourcesInteractive(resMap, '猫头鹰');
+                }
+                renderAll();
+                return true;
+            }
+
+            function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+            async function runGame() {
+                game = new GameState();
+                renderAll();
+                await sleep(400);
+                while (game.turn <= 9) {
+                    game.supportPool = game.heroesBought.filter(h => ['长老', '银鹿', '猫头鹰'].includes(h));
+                    game.phase = '掷骰子';
+                    await showBanner(`第 ${game.turn} 回合 · 掷骰子阶段`);
+                    renderAll();
+                    await sleep(300);
+                    for (let i = 1; i <= 4; i++) {
+                        game.phase = `掷骰子 (${i}/4)`;
+                        renderAll();
+                        await sleep(300);
+                        await rollBothDice(i);
+                        await sleep(200);
+                    }
+                    game.phase = '支援';
+                    await showBanner(`第 ${game.turn} 回合 · 支援阶段`);
+                    renderAll();
+                    while (game.supportPool.length > 0) {
+                        renderAll();
+                        const supList = [...new Set(game.supportPool)];
+                        const choices = supList.map(s => {
+                            const cnt = game.supportPool.filter(x => x === s).length;
+                            const disabled = (s === '长老' && game.coin < 3);
+                            return { label: `${s} (剩余${cnt}次)`, disabled };
+                        });
+                        choices.push({ label: '⏭️ 结束支援阶段', disabled: false });
+                        const ch = await showChoiceModal('选择要发动的支援能力', choices);
+                        if (ch < 0 || ch === supList.length) break;
+                        const ability = supList[ch];
+                        const idx = game.supportPool.indexOf(ability);
+                        if (idx >= 0) {
+                            game.supportPool.splice(idx, 1);
+                            const ok = await executeSupport(ability);
+                            if (!ok) game.supportPool.push(ability);
+                        }
+                        renderAll();
+                    }
+                    game.supportPool = [];
+                    renderAll();
+                    game.phase = '主要行动';
+                    await showBanner(`第 ${game.turn} 回合 · 主要行动阶段`);
+                    renderAll();
+                    await sleep(300);
+                    await actionMenu(false);
+                    game.phase = '额外行动';
+                    await showBanner(`第 ${game.turn} 回合 · 额外行动阶段`);
+                    renderAll();
+                    await sleep(300);
+                    if (game.red < 2) {
+                        showToast('红色资源不足2，跳过额外行动阶段');
+                    } else if (game.red === 2 && game.blue === 0 && game.coin < 2) {
+                        showToast('资源不足进行有效行动，跳过额外行动阶段');
+                    } else {
+                        game.red -= 2;
+                        renderAll();
+                        showToast('支付2红色资源进入额外行动阶段');
+                        const acted = await actionMenu(true);
+                        if (!acted) {
+                            game.red += 2;
+                            showToast('跳过，返还2红色资源');
+                            renderAll();
+                        }
+                    }
+                    game.turn++;
+                }
+                await endGame();
+            }
+
+            async function actionMenu(extraPhase) {
+                while (true) {
+                    renderAll();
+                    const choices = [
+                        { label: '🏪 进入骰面商店', disabled: false },
+                        { label: '🦸 购买英雄卡牌', disabled: false },
+                        { label: extraPhase ? '⏭️ 跳过（返还2红色资源）' : '⏭️ 跳过', disabled: false },
+                    ];
+                    const ch = await showChoiceModal(extraPhase ? '额外行动阶段' : '主要行动阶段', choices);
+                    if (ch === 0) {
+                        await enterShop();
+                        return true;
+                    } else if (ch === 1) {
+                        await buyHero();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+
+            async function enterShop() {
+                const boughtThisVisit = new Set();
+                while (true) {
+                    const available = SHOP_ITEMS.filter(item => {
+                        if (item.limited && game.limitedBought.has(item.face)) return false;
+                        if (boughtThisVisit.has(item.face)) return false;
+                        if (game.coin < item.price) return false;
+                        return true;
+                    });
+                    if (available.length === 0) {
+                        showToast('金币不足以购买任何可购骰面，商店关闭');
+                        break;
+                    }
+                    renderAll();
+                    const ch = await showShopModal(available);
+                    if (ch < 0) break;
+                    const item = available[ch];
+                    if (game.coin < item.price) { showToast('金币不足！'); continue; }
+                    setSelectableMode(true, async (die, idx) => {
+                        setSelectableMode(false, null);
+                        game.coin -= item.price;
+                        const newFace = FACES[item.face];
+                        if (die === 'left') {
+                            game.leftDie[idx] = newFace;
+                        } else {
+                            game.rightDie[idx] = newFace;
+                        }
+                        boughtThisVisit.add(item.face);
+                        if (item.limited) game.limitedBought.add(item.face);
+                        showToast(`已购买 ${newFace.name}`);
+                        renderAll();
+                    });
+                    await sleep(100);
+                    await new Promise(resolve => {
+                        const check = setInterval(() => {
+                            if (!document.querySelector('.dice-face-wrapper.selectable')) {
+                                clearInterval(check);
+                                resolve();
+                            }
+                        }, 200);
+                    });
+                    renderAll();
+                }
+                setSelectableMode(false, null);
+                renderAll();
+            }
+
+            async function buyHero() {
+                const ch = await showHeroModal();
+                if (ch < 0) return;
+                const hero = HEROES[ch];
+                if (!game.payCost(hero.cost)) {
+                    showToast('资源不足！');
+                    return;
+                }
+                game.heroesBought.push(hero.name);
+                showToast(`购买了 ${hero.name}！`);
+                if (hero.effect === 'immediate') {
+                    await triggerImmediate(hero);
+                }
+                renderAll();
+            }
+
+            async function triggerImmediate(hero) {
+                if (hero.id === 'wild_spirit') {
+                    showToast('野灵：获得3蓝色资源和3金币');
+                    await gainResourcesInteractive({ blue: 3, coin: 3 }, '野灵');
+                } else if (hero.id === 'sphinx') {
+                    const ch = await showChoiceModal('斯芬克斯：选择骰子', [{ label: '左骰子' }, { label: '右骰子' }]);
+                    if (ch < 0) return;
+                    const die = ch === 0 ? game.leftDie : game.rightDie;
+                    const dieName = ch === 0 ? 'left' : 'right';
+                    for (let i = 0; i < 4; i++) {
+                        const face = die[Math.floor(Math.random() * 6)];
+                        const idx = die.indexOf(face);
+                        highlightRolledFace(dieName, idx);
+                        renderAll();
+                        await sleep(500);
+                        showToast(`斯芬克斯第${i+1}次：${face.name}`);
+                        await resolveFace(face, 1);
+                        clearRolledHighlights();
+                        renderAll();
+                        await sleep(300);
+                    }
+                } else if (hero.id === 'crab') {
+                    for (let i = 0; i < 2; i++) {
+                        const lf = game.leftDie[Math.floor(Math.random() * 6)];
+                        const rf = game.rightDie[Math.floor(Math.random() * 6)];
+                        highlightRolledFace('left', game.leftDie.indexOf(lf));
+                        highlightRolledFace('right', game.rightDie.indexOf(rf));
+                        renderAll();
+                        await sleep(500);
+                        showToast(`巨蟹第${i+1}次：左${lf.name} 右${rf.name}`);
+                        await resolveTwoFaces(lf, rf);
+                        clearRolledHighlights();
+                        renderAll();
+                        await sleep(300);
+                    }
+                } else if (hero.id === 'helm') {
+                    setSelectableMode(true, async (die, idx) => {
+                        setSelectableMode(false, null);
+                        const newFace = FACES['三倍'];
+                        if (die === 'left') game.leftDie[idx] = newFace;
+                        else game.rightDie[idx] = newFace;
+                        showToast('隐形头盔：获得三倍骰面！');
+                        renderAll();
+                    });
+                    await sleep(100);
+                    await new Promise(resolve => {
+                        const check = setInterval(() => {
+                            if (!document.querySelector('.dice-face-wrapper.selectable')) {
+                                clearInterval(check);
+                                resolve();
+                            }
+                        }, 200);
+                    });
+                } else if (hero.id === 'chest') {
+                    game.redCap += 3;
+                    game.blueCap += 3;
+                    game.coinCap += 4;
+                    showToast('宝箱：红色上限+3，蓝色上限+3，金币上限+4');
+                } else if (hero.id === 'hammer') {
+                    if (game.hammerCap === 0) game.hammerTrack = 0;
+                    game.hammerCap += 30;
+                    showToast(`锤子：锤子轨道上限+30，当前上限${game.hammerCap}`);
+                }
+                renderAll();
+            }
+
+            async function resolveTwoFaces(lf, rf) {
+                const faces = [lf, rf];
+                const tripleIdxs = faces.map((f, i) => f.type === 'triple' ? i : -1).filter(i => i >= 0);
+                if (tripleIdxs.length === 2) {
+                    showToast('两个三倍，无收获');
+                } else if (tripleIdxs.length === 1) {
+                    const other = faces[1 - tripleIdxs[0]];
+                    showToast(`三倍触发！${other.name} ×3`);
+                    await resolveFace(other, 3);
+                } else {
+                    const leftChoice = game.isFaceChoice(lf);
+                    const rightChoice = game.isFaceChoice(rf);
+                    if (!leftChoice && !rightChoice) {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    } else if (!leftChoice && rightChoice) {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    } else if (leftChoice && !rightChoice) {
+                        await resolveFace(rf, 1);
+                        await resolveFace(lf, 1);
+                    } else {
+                        await resolveFace(lf, 1);
+                        await resolveFace(rf, 1);
+                    }
+                }
+            }
+
+            async function endGame() {
+                game.phase = '游戏结束';
+                renderAll();
+                await showBanner('游戏结束！');
+                await sleep(500);
+                let totalScore = game.score;
+                for (const hn of game.heroesBought) {
+                    const hero = HEROES.find(h => h.name === hn);
+                    if (hero) totalScore += hero.score;
+                }
+                let summaryHTML = `
+                    <div style="text-align:left;line-height:1.8;">
+                        <p><b>📊 最终状态：</b></p>
+                        <p>🔴 红色：${game.red}/${game.redCap} | 🔵 蓝色：${game.blue}/${game.blueCap} |  💰 金币：${game.coin}/${game.coinCap}</p>
+                        <p>⭐ 游戏分数：${game.score}</p>
+                        ${game.hasHammer() ? `<p>🔨 锤子轨道：${game.hammerTrack}/${game.hammerCap}</p>` : ''}
+                        <p><b>🎲 左骰子：</b>${game.leftDie.map(f=>f.name).join(' | ')}</p>
+                        <p><b>🎲 右骰子：</b>${game.rightDie.map(f=>f.name).join(' | ')}</p>
+                        <p><b>🏆 已购买英雄（按次序）：</b></p>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+                for (let i = 0; i < game.heroesBought.length; i++) {
+                    summaryHTML +=
+                        `<span style="background:var(--card-bg);padding:4px 10px;border-radius:6px;">${game.heroesBought[i]}</span>`;
+                }
+                summaryHTML += `</div>
+                        <p style="font-size:1.5em;text-align:center;margin-top:16px;"><b>🏅 最终总分：${totalScore}</b></p>
+                    </div>`;
+                await showModalSimple('游戏结束 - 最终结算', summaryHTML, '🔄 再来一局');
+                modalContainer.innerHTML = '';
+                game = new GameState();
+                renderAll();
+                await sleep(300);
+                await runGame();
+            }
+
+            function showModalSimple(title, content, btnText) {
+                return new Promise(resolve => {
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal">
+                                <h3>${title}</h3>
+                                <div>${content}</div>
+                                <button class="close-btn" id="modalCloseBtn">${btnText}</button>
+                            </div>
+                        </div>`;
+                    document.getElementById('modalCloseBtn').onclick = function() {
+                        modalContainer.innerHTML = '';
+                        resolve();
+                    };
+                });
+            }
+
+            renderAll();
+            setTimeout(() => runGame(), 500);
+        })();
+    </script>
+</body>
+</html>
