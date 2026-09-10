@@ -15,15 +15,10 @@
             --red-resource: #f4a4a4;
             --blue-resource: #3050a0;
             --text: #e0e0e0;
-            --highlight: #ffeb3b;
             --border: #3a3a5c;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -57,499 +52,196 @@
             border: 1px solid var(--border);
         }
         .top-bar .turn-info {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #fff;
-            white-space: nowrap;
+            font-size: 1.3em; font-weight: bold; color: #fff; white-space: nowrap;
         }
         .top-bar .phase-badge {
-            background: #e67e22;
-            color: #fff;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.95em;
-            white-space: nowrap;
+            background: #e67e22; color: #fff; padding: 5px 14px;
+            border-radius: 20px; font-weight: bold; font-size: 0.95em; white-space: nowrap;
         }
         .top-bar .score-display {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: var(--score-green-light);
-            white-space: nowrap;
+            font-size: 1.4em; font-weight: bold; color: var(--score-green-light); white-space: nowrap;
         }
 
         .resources-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 14px 18px;
-            border: 1px solid var(--border);
-            align-items: center;
+            display: flex; flex-wrap: wrap; gap: 10px;
+            background: var(--panel-bg); border-radius: 12px; padding: 14px 18px;
+            border: 1px solid var(--border); align-items: center;
         }
         .resource-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.95em;
-            white-space: nowrap;
+            display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+            border-radius: 8px; font-weight: bold; font-size: 0.95em; white-space: nowrap;
         }
-        .resource-red {
-            background: #5c2020;
-            color: #f4a4a4;
-        }
-        .resource-blue {
-            background: #1a2a50;
-            color: #8098e0;
-        }
-        .resource-coin {
-            background: #4a3800;
-            color: #f0c040;
-        }
-        .resource-hammer {
-            background: #3a3040;
-            color: #c0a0d0;
-        }
-        .resource-cap {
-            font-size: 0.8em;
-            opacity: 0.8;
-        }
-        .resource-value {
-            font-size: 1.2em;
-            min-width: 24px;
-            text-align: center;
-        }
+        .resource-red { background: #5c2020; color: #f4a4a4; }
+        .resource-blue { background: #1a2a50; color: #8098e0; }
+        .resource-coin { background: #4a3800; color: #f0c040; }
+        .resource-hammer { background: #3a3040; color: #c0a0d0; }
+        .resource-cap { font-size: 0.8em; opacity: 0.8; }
+        .resource-value { font-size: 1.2em; min-width: 24px; text-align: center; }
 
-        .dice-area {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+        .dice-area { display: flex; gap: 16px; flex-wrap: wrap; }
         .dice-column {
-            flex: 1;
-            min-width: 280px;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 14px;
-            border: 1px solid var(--border);
+            flex: 1; min-width: 280px; background: var(--panel-bg);
+            border-radius: 12px; padding: 14px; border: 1px solid var(--border);
         }
-        .dice-column h3 {
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-            letter-spacing: 2px;
-        }
-        .dice-faces {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-        .dice-face-wrapper {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.15s;
-        }
-        .dice-face-wrapper:hover {
-            transform: scale(1.06);
-        }
+        .dice-column h3 { text-align: center; margin-bottom: 8px; font-size: 1.1em; letter-spacing: 2px; }
+        .dice-faces { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .dice-face-wrapper { position: relative; cursor: pointer; transition: transform 0.15s; }
+        .dice-face-wrapper:hover { transform: scale(1.06); }
         .dice-face-wrapper.rolled {
-            outline: 3px solid #e74c3c;
-            outline-offset: 3px;
-            animation: pulse-red 0.35s ease-in-out 3;
-            z-index: 5;
+            outline: 3px solid #e74c3c; outline-offset: 3px;
+            animation: pulse-red 0.35s ease-in-out 3; z-index: 5;
         }
         @keyframes pulse-red {
-            0%,
-            100% {
-                outline-color: #e74c3c;
-                box-shadow: 0 0 8px 2px rgba(231, 76, 60, 0.5);
-            }
-            50% {
-                outline-color: #ff6b6b;
-                box-shadow: 0 0 20px 6px rgba(255, 107, 107, 1);
-            }
+            0%, 100% { outline-color: #e74c3c; box-shadow: 0 0 8px 2px rgba(231,76,60,0.5); }
+            50% { outline-color: #ff6b6b; box-shadow: 0 0 20px 6px rgba(255,107,107,1); }
         }
-        .dice-face-wrapper.selectable {
-            outline: 3px dashed #ffeb3b;
-            outline-offset: 3px;
-            border-radius: 8px;
-        }
+        .dice-face-wrapper.selectable { outline: 3px dashed #ffeb3b; outline-offset: 3px; border-radius: 8px; }
 
         .face-circle {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1em;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: #000;
-            text-align: center;
-            line-height: 1.1;
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1em;
+            border: 2px solid rgba(255,255,255,0.3); color: #000;
+            text-align: center; line-height: 1.1;
         }
-        .face-circle.small {
-            width: 34px;
-            height: 34px;
-            font-size: 0.7em;
-            border-width: 1.5px;
-        }
-        .face-circle.coin-face {
-            background: var(--gold);
-            color: #000;
-            border-color: #a07000;
-        }
-        .face-circle.score-face {
-            background: var(--score-green);
-            color: #fff;
-            border-color: #1a5a20;
-        }
-        .face-circle.red-face {
-            background: var(--red-resource);
-            color: #000;
-            border-color: #b05050;
-        }
-        .face-circle.blue-face {
-            background: var(--blue-resource);
-            color: #fff;
-            border-color: #1a3070;
-        }
+        .face-circle.small { width: 34px; height: 34px; font-size: 0.7em; border-width: 1.5px; }
+        .face-circle.coin-face { background: var(--gold); color: #000; border-color: #a07000; }
+        .face-circle.score-face { background: var(--score-green); color: #fff; border-color: #1a5a20; }
+        .face-circle.red-face { background: var(--red-resource); color: #000; border-color: #b05050; }
+        .face-circle.blue-face { background: var(--blue-resource); color: #fff; border-color: #1a3070; }
         .face-square {
-            width: 52px;
-            height: 52px;
-            border-radius: 8px;
-            background: #111;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.3em;
-            border: 2px solid #555;
-            letter-spacing: 2px;
+            width: 52px; height: 52px; border-radius: 8px; background: #111; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.3em; border: 2px solid #555; letter-spacing: 2px;
         }
-        .face-multi,
-        .face-choice-grid,
-        .face-diag {
-            width: 52px;
-            height: 52px;
-            display: grid;
-            place-items: center;
+        .face-multi, .face-choice-grid, .face-diag {
+            width: 52px; height: 52px; display: grid; place-items: center;
         }
-        .face-multi {
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 2px;
-        }
-        .face-multi .face-circle.small {
-            width: 22px;
-            height: 22px;
-            font-size: 0.55em;
-        }
-        .face-choice-grid {
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 2px;
-        }
-        .face-choice-grid .face-circle.small {
-            width: 22px;
-            height: 22px;
-            font-size: 0.5em;
-        }
+        .face-multi { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
+        .face-multi .face-circle.small { width: 22px; height: 22px; font-size: 0.55em; }
+        .face-choice-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
+        .face-choice-grid .face-circle.small { width: 22px; height: 22px; font-size: 0.5em; }
         .question-circle {
-            background: #222;
-            color: #fff;
-            border-color: #666;
-            font-size: 0.9em;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            background: #222; color: #fff; border-color: #666; font-size: 0.9em;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
         }
-        .face-diag {
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 1px;
-            transform: rotate(-15deg);
-        }
-        .face-diag .face-circle.small {
-            width: 28px;
-            height: 28px;
-            font-size: 0.6em;
-        }
+        .face-diag { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1px; transform: rotate(-15deg); }
+        .face-diag .face-circle.small { width: 28px; height: 28px; font-size: 0.6em; }
 
         .banner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            pointer-events: none;
-            animation: fadeInOut 1.2s ease forwards;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center;
+            z-index: 100; pointer-events: none; animation: fadeInOut 1.2s ease forwards;
         }
         .banner-text {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(255, 200, 50, 0.9);
-            letter-spacing: 4px;
+            font-size: 2.5em; font-weight: bold; color: #fff;
+            text-shadow: 0 0 30px rgba(255,200,50,0.9); letter-spacing: 4px;
         }
         @keyframes fadeInOut {
-            0% {
-                opacity: 0;
-            }
-            15% {
-                opacity: 1;
-            }
-            70% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-            }
+            0% { opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; }
         }
 
         #toastContainer {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 400;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
+            position: fixed; top: 20px; right: 20px; z-index: 400;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
         .toast-item {
-            background: #2c3e50;
-            color: #fff;
-            padding: 12px 22px;
-            border-radius: 24px;
-            font-weight: bold;
-            font-size: 1em;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            background: #2c3e50; color: #fff; padding: 12px 22px; border-radius: 24px;
+            font-weight: bold; font-size: 1em; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
-            pointer-events: auto;
-            white-space: nowrap;
+            pointer-events: auto; white-space: nowrap;
         }
-        @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        @keyframes toastOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-        }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(50px); } }
 
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200;
         }
         .modal {
-            background: #243045;
-            border-radius: 16px;
-            padding: 20px 24px;
-            max-width: 700px;
-            width: 95%;
-            max-height: 85vh;
-            overflow-y: auto;
-            border: 2px solid #4a6a8a;
-            color: #e0e0e0;
-            position: relative;
+            background: #243045; border-radius: 16px; padding: 20px 24px;
+            max-width: 700px; width: 95%; max-height: 85vh; overflow-y: auto;
+            border: 2px solid #4a6a8a; color: #e0e0e0; position: relative;
         }
-        .modal h3 {
-            text-align: center;
-            margin-bottom: 12px;
-            color: #fff;
-            font-size: 1.3em;
-        }
-        .modal .choices {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
+        .modal h3 { text-align: center; margin-bottom: 12px; color: #fff; font-size: 1.3em; }
+        .modal .choices { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .modal .choice-card {
-            background: var(--card-bg);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-            min-width: 70px;
+            background: var(--card-bg); border: 2px solid transparent; border-radius: 10px;
+            padding: 10px 14px; cursor: pointer; text-align: center;
+            transition: all 0.2s; min-width: 70px;
         }
-        .modal .choice-card:hover {
-            border-color: #ffeb3b;
-            background: #1a3a5a;
-        }
+        .modal .choice-card:hover { border-color: #ffeb3b; background: #1a3a5a; }
         .modal .choice-card.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-            cursor: not-allowed;
-            border-color: #555;
-            background: #1e2a3a;
+            opacity: 0.4; pointer-events: none; cursor: not-allowed;
+            border-color: #555; background: #1e2a3a;
         }
         .modal .close-btn {
-            display: block;
-            margin: 14px auto 0;
-            padding: 8px 28px;
-            border-radius: 20px;
-            background: #555;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
+            display: block; margin: 14px auto 0; padding: 8px 28px;
+            border-radius: 20px; background: #555; color: #fff;
+            border: none; cursor: pointer; font-size: 1em;
         }
-        .modal .close-btn:hover {
-            background: #777;
-        }
+        .modal .close-btn:hover { background: #777; }
 
         .modal-hide-btn {
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #555;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
+            position: absolute; top: 8px; right: 12px; width: 36px; height: 36px;
+            border-radius: 50%; background: #555; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5em; font-weight: bold; cursor: pointer; z-index: 10;
             transition: background 0.2s;
         }
-        .modal-hide-btn:hover {
-            background: #777;
-        }
+        .modal-hide-btn:hover { background: #777; }
 
         .modal-restore-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 300;
-            background: #e67e22;
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 24px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
+            position: fixed; bottom: 20px; left: 20px; z-index: 300;
+            background: #e67e22; color: #fff; padding: 10px 18px;
+            border-radius: 24px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer;
             transition: background 0.2s;
         }
-        .modal-restore-btn:hover {
-            background: #f39c12;
-        }
+        .modal-restore-btn:hover { background: #f39c12; }
 
         .hero-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            flex-direction: column;
-            align-items: stretch;
+            display: flex; flex-wrap: wrap; gap: 8px;
+            justify-content: center; flex-direction: column; align-items: stretch;
         }
         .hero-card-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            background: var(--card-bg); border-radius: 10px; padding: 10px 14px;
+            cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
+            text-align: left; display: flex; align-items: center; gap: 12px;
         }
-        .hero-card-item:hover {
-            border-color: #ffeb3b;
-        }
+        .hero-card-item:hover { border-color: #ffeb3b; }
         .hero-card-item.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-            border-color: #444;
-            background: #1a2030;
+            opacity: 0.4; pointer-events: none; border-color: #444; background: #1a2030;
         }
+        .hero-desc { font-size: 0.85em; color: #a0b0c0; margin-top: 3px; }
+
+        .hammer-choices {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            justify-content: center; margin: 12px 0;
+        }
+        .hammer-choice-card {
+            background: var(--card-bg); border: 2px solid transparent;
+            border-radius: 10px; padding: 12px 18px; cursor: pointer;
+            font-size: 1.15em; font-weight: bold; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .hammer-choice-card:hover { border-color: #ffeb3b; background: #1a3a5a; }
+        .hammer-coin { color: #f0c040; }
+        .hammer-hammer { color: #c0a0d0; }
+        .hammer-plus { color: #888; font-weight: normal; }
 
         @media (max-width: 700px) {
-            .face-circle {
-                width: 38px;
-                height: 38px;
-                font-size: 0.75em;
-            }
-            .face-circle.small {
-                width: 24px;
-                height: 24px;
-                font-size: 0.55em;
-            }
-            .face-square {
-                width: 38px;
-                height: 38px;
-                font-size: 1em;
-            }
-            .face-multi,
-            .face-choice-grid {
-                width: 38px;
-                height: 38px;
-            }
+            .face-circle { width: 38px; height: 38px; font-size: 0.75em; }
+            .face-circle.small { width: 24px; height: 24px; font-size: 0.55em; }
+            .face-square { width: 38px; height: 38px; font-size: 1em; }
+            .face-multi, .face-choice-grid { width: 38px; height: 38px; }
             .face-multi .face-circle.small,
-            .face-choice-grid .face-circle.small {
-                width: 16px;
-                height: 16px;
-                font-size: 0.4em;
-            }
-            .face-diag {
-                width: 36px;
-                height: 36px;
-            }
-            .face-diag .face-circle.small {
-                width: 20px;
-                height: 20px;
-                font-size: 0.5em;
-            }
-            .banner-text {
-                font-size: 1.5em;
-            }
-            .dice-area {
-                flex-direction: column;
-            }
+            .face-choice-grid .face-circle.small { width: 16px; height: 16px; font-size: 0.4em; }
+            .face-diag { width: 36px; height: 36px; }
+            .face-diag .face-circle.small { width: 20px; height: 20px; font-size: 0.5em; }
+            .banner-text { font-size: 1.5em; }
+            .dice-area { flex-direction: column; }
         }
     </style>
 </head>
@@ -578,14 +270,11 @@
                 '6金币': { name: '6金币', type: 'simple', data: { coin: 6 }, coin: true },
                 '1红色资源+1分': { name: '1红色资源+1分', type: 'simple', data: { red: 1, score: 1 }, coin: false },
                 '1蓝色资源+2金币': { name: '1蓝色资源+2金币', type: 'simple', data: { blue: 1, coin: 2 }, coin: true },
-                '三选一(1)': { name: '三选一：1红/1蓝/1金币', type: 'choice', data: [{ red: 1 }, { blue: 1 }, { coin: 1 }],
-                    coin: true },
-                '1红+1蓝+1分+1金币': { name: '1红+1蓝+1分+1金币', type: 'simple', data: { red: 1, blue: 1, score: 1,
-                        coin: 1 }, coin: true },
+                '三选一(1)': { name: '三选一：1红/1蓝/1金币', type: 'choice', data: [{ red: 1 }, { blue: 1 }, { coin: 1 }], coin: true },
+                '1红+1蓝+1分+1金币': { name: '1红+1蓝+1分+1金币', type: 'simple', data: { red: 1, blue: 1, score: 1, coin: 1 }, coin: true },
                 '2蓝+2分': { name: '2蓝+2分', type: 'simple', data: { blue: 2, score: 2 }, coin: false },
                 '6分': { name: '6分', type: 'simple', data: { score: 6 }, coin: false },
-                '三选一(2)': { name: '三选一：2红/2蓝/2金币', type: 'choice', data: [{ red: 2 }, { blue: 2 }, { coin: 2 }],
-                    coin: true },
+                '三选一(2)': { name: '三选一：2红/2蓝/2金币', type: 'choice', data: [{ red: 2 }, { blue: 2 }, { coin: 2 }], coin: true },
                 '三倍': { name: '三倍', type: 'triple', data: null, coin: false },
             };
 
@@ -601,21 +290,36 @@
             ];
 
             const HEROES = [
-                { name: '长老', cost: { red: 1 }, score: 0, effect: 'support', id: 'elder' },
-                { name: '野灵', cost: { red: 1 }, score: 2, effect: 'immediate', id: 'wild_spirit' },
-                { name: '猫头鹰', cost: { red: 2 }, score: 4, effect: 'support', id: 'owl' },
-                { name: '米诺陶', cost: { red: 3 }, score: 11, effect: 'none', id: 'minotaur' },
-                { name: '戈尔贡', cost: { red: 4 }, score: 14, effect: 'none', id: 'gorgon' },
-                { name: '深渊之镜', cost: { red: 5 }, score: 16, effect: 'none', id: 'abyss' },
-                { name: '斯芬克斯', cost: { red: 6 }, score: 10, effect: 'immediate', id: 'sphinx' },
-                { name: '九头蛇', cost: { red: 5, blue: 5 }, score: 26, effect: 'none', id: 'hydra' },
-                { name: '巨蟹', cost: { blue: 6 }, score: 8, effect: 'immediate', id: 'crab' },
-                { name: '隐形头盔', cost: { blue: 5 }, score: 4, effect: 'immediate', id: 'helm' },
-                { name: '船夫', cost: { blue: 4 }, score: 12, effect: 'none', id: 'ferryman' },
-                { name: '萨提尔', cost: { blue: 3 }, score: 10, effect: 'none', id: 'satyr' },
-                { name: '银鹿', cost: { blue: 2 }, score: 2, effect: 'support', id: 'deer' },
-                { name: '宝箱', cost: { blue: 1 }, score: 2, effect: 'immediate', id: 'chest' },
-                { name: '锤子', cost: { blue: 1 }, score: 0, effect: 'immediate', id: 'hammer' },
+                { name: '长老', cost: { red: 1 }, score: 0, effect: 'support', id: 'elder',
+                  desc: '支援：支付3金币 → 4分' },
+                { name: '野灵', cost: { red: 1 }, score: 2, effect: 'immediate', id: 'wild_spirit',
+                  desc: '立即：获得3蓝色资源 + 3金币' },
+                { name: '猫头鹰', cost: { red: 2 }, score: 4, effect: 'support', id: 'owl',
+                  desc: '支援：三选一获得1红/1蓝/1金' },
+                { name: '米诺陶', cost: { red: 3 }, score: 11, effect: 'none', id: 'minotaur',
+                  desc: '无效果，仅提供11分' },
+                { name: '戈尔贡', cost: { red: 4 }, score: 14, effect: 'none', id: 'gorgon',
+                  desc: '无效果，仅提供14分' },
+                { name: '深渊之镜', cost: { red: 5 }, score: 16, effect: 'none', id: 'abyss',
+                  desc: '无效果，仅提供16分' },
+                { name: '斯芬克斯', cost: { red: 6 }, score: 10, effect: 'immediate', id: 'sphinx',
+                  desc: '立即：选一骰子单独投掷4次' },
+                { name: '九头蛇', cost: { red: 5, blue: 5 }, score: 26, effect: 'none', id: 'hydra',
+                  desc: '无效果，仅提供26分' },
+                { name: '巨蟹', cost: { blue: 6 }, score: 8, effect: 'immediate', id: 'crab',
+                  desc: '立即：双骰同时投掷2次' },
+                { name: '隐形头盔', cost: { blue: 5 }, score: 4, effect: 'immediate', id: 'helm',
+                  desc: '立即：获得一个"三倍"骰面' },
+                { name: '船夫', cost: { blue: 4 }, score: 12, effect: 'none', id: 'ferryman',
+                  desc: '无效果，仅提供12分' },
+                { name: '萨提尔', cost: { blue: 3 }, score: 10, effect: 'none', id: 'satyr',
+                  desc: '无效果，仅提供10分' },
+                { name: '银鹿', cost: { blue: 2 }, score: 2, effect: 'support', id: 'deer',
+                  desc: '支援：选一骰子单独投掷1次' },
+                { name: '宝箱', cost: { blue: 1 }, score: 2, effect: 'immediate', id: 'chest',
+                  desc: '立即：红/蓝上限+3，金币上限+4' },
+                { name: '锤子', cost: { blue: 1 }, score: 0, effect: 'immediate', id: 'hammer',
+                  desc: '立即：获得锤子轨道（上限+30）' },
             ];
 
             // ==================== 游戏状态 ====================
@@ -625,17 +329,10 @@
                     shuffle(pool);
                     this.leftDie = pool.slice(0, 6).map(n => FACES[n]);
                     this.rightDie = pool.slice(6, 12).map(n => FACES[n]);
-                    this.red = 0;
-                    this.blue = 0;
-                    this.coin = 0;
-                    this.score = 0;
-                    this.redCap = 6;
-                    this.blueCap = 6;
-                    this.coinCap = 12;
-                    this.hammerTrack = 0;
-                    this.hammerCap = 0;
-                    this.turn = 1;
-                    this.phase = '准备';
+                    this.red = 0; this.blue = 0; this.coin = 0; this.score = 0;
+                    this.redCap = 6; this.blueCap = 6; this.coinCap = 12;
+                    this.hammerTrack = 0; this.hammerCap = 0;
+                    this.turn = 1; this.phase = '准备';
                     this.heroesBought = [];
                     this.limitedBought = new Set();
                     this.supportPool = [];
@@ -661,13 +358,9 @@
                     for (const [res, val] of Object.entries(resDict)) {
                         if (val === 0) continue;
                         if (res === 'coin') continue;
-                        if (res === 'red') { const a = Math.min(val, this.redCap - this.red);
-                            this.red += a;
-                            gained.red = a; } else if (res === 'blue') { const a = Math.min(val, this.blueCap - this
-                                .blue);
-                            this.blue += a;
-                            gained.blue = a; } else if (res === 'score') { this.score += val;
-                            gained.score = val; }
+                        if (res === 'red') { const a = Math.min(val, this.redCap - this.red); this.red += a; gained.red = a; }
+                        else if (res === 'blue') { const a = Math.min(val, this.blueCap - this.blue); this.blue += a; gained.blue = a; }
+                        else if (res === 'score') { this.score += val; gained.score = val; }
                     }
                     if (resDict.coin && resDict.coin > 0) {
                         const cv = resDict.coin;
@@ -682,19 +375,14 @@
                     return gained;
                 }
                 canPay(cost) {
-                    const rc = cost.red || 0;
-                    const bc = cost.blue || 0;
-                    const cc = cost.coin || 0;
+                    const rc = cost.red || 0, bc = cost.blue || 0, cc = cost.coin || 0;
                     return this.red >= rc && this.blue >= bc && this.coin >= cc;
                 }
                 payCost(cost) {
                     if (!this.canPay(cost)) return false;
-                    const rc = cost.red || 0;
-                    const bc = cost.blue || 0;
-                    const cc = cost.coin || 0;
-                    this.red -= rc;
-                    this.blue -= bc;
-                    this.coin -= cc;
+                    this.red -= (cost.red || 0);
+                    this.blue -= (cost.blue || 0);
+                    this.coin -= (cost.coin || 0);
                     return true;
                 }
                 isFaceChoice(face) {
@@ -704,9 +392,7 @@
                 }
                 getSupportAbilities() {
                     const map = {};
-                    for (const hn of this.supportPool) {
-                        map[hn] = (map[hn] || 0) + 1;
-                    }
+                    for (const hn of this.supportPool) map[hn] = (map[hn] || 0) + 1;
                     return map;
                 }
             }
@@ -725,17 +411,16 @@
             let game = new GameState();
             let rolledHighlightTimeout = null;
 
+            // ==================== 渲染工具 ====================
             function renderResourceCircle(data, isSmall = false, sz = 'small') {
                 const k = Object.keys(data)[0];
                 const v = data[k];
                 let cls = 'face-circle';
-                if (isSmall) {
-                    if (sz === 'tiny') cls += ' small';
-                    else if (sz === 'xsmall') cls += ' small';
-                    else cls += ' small';
-                }
-                if (k === 'coin') { cls += ' coin-face'; } else if (k === 'score') { cls += ' score-face'; } else if (k ===
-                    'red') { cls += ' red-face'; } else if (k === 'blue') { cls += ' blue-face'; }
+                if (isSmall) cls += ' small';
+                if (k === 'coin') cls += ' coin-face';
+                else if (k === 'score') cls += ' score-face';
+                else if (k === 'red') cls += ' red-face';
+                else if (k === 'blue') cls += ' blue-face';
                 let text = '';
                 if (k === 'coin') text = v + '金';
                 else if (k === 'score') text = v + '分';
@@ -756,24 +441,20 @@
                 if (face.type === 'choice') {
                     const opts = face.data;
                     const items = opts.map(opt => renderResourceCircle(opt, true));
-                    items.push(
-                        '<div class="question-circle" style="width:22px;height:22px;font-size:0.55em;">?</div>');
+                    items.push('<div class="question-circle" style="width:22px;height:22px;font-size:0.55em;">?</div>');
                     const w = size === 'small' ? '34px' : '52px';
                     const h = size === 'small' ? '34px' : '52px';
                     return `<div class="face-choice-grid" style="width:${w};height:${h};">${items.join('')}</div>`;
                 }
                 const data = face.data;
                 const keys = Object.keys(data);
-                if (keys.length === 1) {
-                    return renderResourceCircle(data, false, size);
-                }
+                if (keys.length === 1) return renderResourceCircle(data, false, size);
                 if (keys.length === 2) {
                     const w = size === 'small' ? '30px' : '48px';
                     const h = size === 'small' ? '30px' : '48px';
                     let html = `<div class="face-diag" style="width:${w};height:${h};">`;
                     html += `<div class="tl">${renderResourceCircle({[keys[0]]:data[keys[0]]},true,'xsmall')}</div>`;
-                    html +=
-                        `<div class="br">${renderResourceCircle({[keys[1]]:data[keys[1]]},true,'xsmall')}</div>`;
+                    html += `<div class="br">${renderResourceCircle({[keys[1]]:data[keys[1]]},true,'xsmall')}</div>`;
                     html += '</div>';
                     return html;
                 }
@@ -781,9 +462,7 @@
                     const w = size === 'small' ? '34px' : '52px';
                     const h = size === 'small' ? '34px' : '52px';
                     let html = `<div class="face-multi" style="width:${w};height:${h};">`;
-                    for (const k of keys) {
-                        html += renderResourceCircle({ [k]: data[k] }, true, 'tiny');
-                    }
+                    for (const k of keys) html += renderResourceCircle({ [k]: data[k] }, true, 'tiny');
                     html += '</div>';
                     return html;
                 }
@@ -818,13 +497,10 @@
                     </div>
                 </div>`;
                 const supAb = game.getSupportAbilities();
-                const supStr = Object.keys(supAb).length > 0 ? Object.entries(supAb).map(([n, c]) => `${n}×${c}`).join(
-                    ', ') : '无';
-                html +=
-                    `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🛡️ 可用支援能力：<b>${supStr}</b></div>`;
+                const supStr = Object.keys(supAb).length > 0 ? Object.entries(supAb).map(([n, c]) => `${n}×${c}`).join(', ') : '无';
+                html += `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🛡️ 可用支援能力：<b>${supStr}</b></div>`;
                 if (game.heroesBought.length > 0) {
-                    html +=
-                        `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🏆 已购买英雄：${game.heroesBought.join(' → ')}</div>`;
+                    html += `<div style="background:var(--panel-bg);border-radius:10px;padding:10px 16px;border:1px solid var(--border);text-align:center;">🏆 已购买英雄：${game.heroesBought.join(' → ')}</div>`;
                 }
                 html += `<div class="action-buttons" id="actionButtons"></div>`;
                 gameContainer.innerHTML = html;
@@ -837,8 +513,7 @@
                     el.classList.add('rolled');
                     if (rolledHighlightTimeout) clearTimeout(rolledHighlightTimeout);
                     rolledHighlightTimeout = setTimeout(() => {
-                        document.querySelectorAll('.dice-face-wrapper.rolled').forEach(e => e.classList
-                            .remove('rolled'));
+                        document.querySelectorAll('.dice-face-wrapper.rolled').forEach(e => e.classList.remove('rolled'));
                     }, 800);
                 }
             }
@@ -876,14 +551,11 @@
                 toast.className = 'toast-item';
                 toast.textContent = msg;
                 toastContainer.appendChild(toast);
-                setTimeout(() => {
-                    if (toast.parentNode) toast.remove();
-                }, 2600);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 2600);
             }
 
             // 通用模态隐藏功能
-            function setupModalHiding(overlay, resolveCallback) {
-                // 移除旧的恢复按钮
+            function setupModalHiding(overlay) {
                 const oldRestore = document.getElementById('modalRestoreBtn');
                 if (oldRestore) oldRestore.remove();
 
@@ -915,13 +587,13 @@
                 return cleanup;
             }
 
+            // 通用模态：选项
             function showChoiceModal(title, choices) {
                 return new Promise(resolve => {
                     let html = '<div class="choices">';
                     choices.forEach((c, i) => {
                         const disabledClass = c.disabled ? ' disabled' : '';
-                        html +=
-                            `<div class="choice-card${disabledClass}" data-idx="${i}" style="cursor:pointer;">${c.label}</div>`;
+                        html += `<div class="choice-card${disabledClass}" data-idx="${i}">${c.label}</div>`;
                     });
                     html += '</div>';
                     modalContainer.innerHTML = `
@@ -933,7 +605,7 @@
                             </div>
                         </div>`;
                     const overlay = modalContainer.querySelector('.modal-overlay');
-                    const cleanup = setupModalHiding(overlay, resolve);
+                    const cleanup = setupModalHiding(overlay);
 
                     modalContainer.querySelectorAll('.choice-card:not(.disabled)').forEach(card => {
                         card.onclick = function() {
@@ -950,7 +622,44 @@
                 });
             }
 
-            function showShopModal(availableItems) {
+            // 锤子转换弹窗（点击即执行，无确认按钮）
+            function showHammerConvertModal(cv, maxConv, sourceDesc) {
+                return new Promise(resolve => {
+                    let html = '<div class="hammer-choices">';
+                    for (let i = 0; i <= maxConv; i++) {
+                        const coinLeft = cv - i;
+                        const hammerGain = i;
+                        html += `<div class="hammer-choice-card" data-idx="${i}">
+                            <span class="hammer-coin">${coinLeft} 💰</span>
+                            <span class="hammer-plus">+</span>
+                            <span class="hammer-hammer">${hammerGain}🔨</span>
+                        </div>`;
+                    }
+                    html += '</div>';
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal" style="max-width:560px;">
+                                <h3>💰 获得 ${cv} 金币 (${sourceDesc})<br>
+                                    <span style="font-size:0.7em;color:#aab0c0;font-weight:normal;">点击方案即可执行</span>
+                                </h3>
+                                ${html}
+                            </div>
+                        </div>`;
+                    const overlay = modalContainer.querySelector('.modal-overlay');
+                    const cleanup = setupModalHiding(overlay);
+
+                    modalContainer.querySelectorAll('.hammer-choice-card').forEach(card => {
+                        card.onclick = function() {
+                            modalContainer.innerHTML = '';
+                            cleanup();
+                            resolve(parseInt(this.dataset.idx));
+                        };
+                    });
+                });
+            }
+
+            // 商店弹窗
+            function showShopModal(availableItems, boughtAnything) {
                 return new Promise(resolve => {
                     let html = '<div class="choices" style="flex-direction:column;align-items:stretch;">';
                     availableItems.forEach((item, i) => {
@@ -966,16 +675,17 @@
                             </div>`;
                     });
                     html += '</div>';
+                    const btnText = boughtAnything ? '结束购买' : '返回（撤销行动）';
                     modalContainer.innerHTML = `
                         <div class="modal-overlay">
                             <div class="modal" style="max-width:600px;">
                                 <h3>🏪 骰面商店</h3>
                                 ${html}
-                                <button class="close-btn" data-idx="-1">离开商店</button>
+                                <button class="close-btn" data-idx="-1">${btnText}</button>
                             </div>
                         </div>`;
                     const overlay = modalContainer.querySelector('.modal-overlay');
-                    const cleanup = setupModalHiding(overlay, resolve);
+                    const cleanup = setupModalHiding(overlay);
 
                     modalContainer.querySelectorAll('.shop-item-card').forEach(card => {
                         card.onclick = function() {
@@ -992,6 +702,7 @@
                 });
             }
 
+            // 英雄弹窗
             function showHeroModal() {
                 return new Promise(resolve => {
                     let html = '<div class="hero-list">';
@@ -1004,23 +715,27 @@
                         const canAfford = game.canPay(hero.cost);
                         const disabledClass = canAfford ? '' : ' disabled';
                         html += `
-                            <div class="hero-card-item choice-card${disabledClass}" data-idx="${i}" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:10px 14px;">
-                                <b style="min-width:70px;">${hero.name}</b>
-                                <span style="flex:1;text-align:left;">费用:${costStr} | ⭐${hero.score}分 | ${hero.effect==='support'?'支援':hero.effect==='immediate'?'立即':'无'} ${boughtCount>0?'(已购'+boughtCount+')':''}</span>
-                                ${!canAfford ? '<span style="color:#e74c3c;margin-left:auto;">资源不足</span>' : ''}
+                            <div class="hero-card-item choice-card${disabledClass}" data-idx="${i}">
+                                <div style="flex:1;text-align:left;">
+                                    <div><b style="font-size:1.05em;">${hero.name}</b>
+                                        <span style="color:#f0c040;font-size:0.85em;margin-left:8px;">费用:${costStr} | ⭐${hero.score}分${boughtCount>0?' (已购'+boughtCount+')':''}</span>
+                                    </div>
+                                    <div class="hero-desc">${hero.desc}</div>
+                                </div>
+                                ${!canAfford ? '<span style="color:#e74c3c;white-space:nowrap;">资源不足</span>' : ''}
                             </div>`;
                     });
                     html += '</div>';
                     modalContainer.innerHTML = `
                         <div class="modal-overlay">
-                            <div class="modal" style="max-width:650px;">
+                            <div class="modal" style="max-width:680px;">
                                 <h3>🦸 购买英雄卡牌</h3>
                                 ${html}
-                                <button class="close-btn" data-idx="-1">返回</button>
+                                <button class="close-btn" data-idx="-1">返回（撤销行动）</button>
                             </div>
                         </div>`;
                     const overlay = modalContainer.querySelector('.modal-overlay');
-                    const cleanup = setupModalHiding(overlay, resolve);
+                    const cleanup = setupModalHiding(overlay);
 
                     modalContainer.querySelectorAll('.hero-card-item:not(.disabled)').forEach(card => {
                         card.onclick = function() {
@@ -1037,6 +752,28 @@
                 });
             }
 
+            // 结算弹窗
+            function showModalSimple(title, content, btnText) {
+                return new Promise(resolve => {
+                    modalContainer.innerHTML = `
+                        <div class="modal-overlay">
+                            <div class="modal">
+                                <h3>${title}</h3>
+                                <div>${content}</div>
+                                <button class="close-btn" id="modalCloseBtn">${btnText}</button>
+                            </div>
+                        </div>`;
+                    const overlay = modalContainer.querySelector('.modal-overlay');
+                    const cleanup = setupModalHiding(overlay);
+                    document.getElementById('modalCloseBtn').onclick = function() {
+                        modalContainer.innerHTML = '';
+                        cleanup();
+                        resolve();
+                    };
+                });
+            }
+
+            // ==================== 核心逻辑 ====================
             async function resolveFace(face, multiplier = 1, sourceDesc = '') {
                 if (face.type === 'triple') return;
                 let resData;
@@ -1054,9 +791,7 @@
                 } else {
                     resData = { ...face.data };
                 }
-                if (multiplier !== 1) {
-                    for (const k in resData) resData[k] *= multiplier;
-                }
+                if (multiplier !== 1) for (const k in resData) resData[k] *= multiplier;
                 await gainResourcesInteractive(resData, sourceDesc || face.name);
             }
 
@@ -1066,11 +801,7 @@
                     const cv = resDict.coin;
                     const maxConv = Math.min(cv, game.hammerCap - game.hammerTrack);
                     if (maxConv > 0) {
-                        const ch = await showChoiceModal(
-                            `💰 获得${cv}金币 (${sourceDesc})，可将最多${maxConv}转换为锤子`,
-                            Array.from({ length: maxConv + 1 }, (_, i) => ({ label: `转换 ${i} 金币为锤子 🔨` }))
-                        );
-                        hammerChoice = (ch >= 0) ? ch : 0;
+                        hammerChoice = await showHammerConvertModal(cv, maxConv, sourceDesc || '获得金币');
                     }
                 }
                 const gained = game.gainResources(resDict, hammerChoice);
@@ -1081,6 +812,8 @@
                 if (gained.score) msgParts.push(`⭐+${gained.score}`);
                 if (gained.hammer) msgParts.push(`🔨+${gained.hammer}`);
                 if (msgParts.length > 0) showToast(`获得: ${msgParts.join(' ')}`);
+                // ★ 修复：应用资源后立即刷新界面，确保双选择面之间的资源面板能及时更新
+                renderAll();
             }
 
             async function rollBothDice(rollNum) {
@@ -1115,7 +848,11 @@
                         await resolveFace(rf, 1);
                         await resolveFace(lf, 1);
                     } else {
+                        // ★ 两个面都带选择：先左后右
                         await resolveFace(lf, 1);
+                        // ★ 修复：在两次选择之间加短暂延迟，让玩家看清第一次结算的结果
+                        //    （renderAll 已在 gainResourcesInteractive 中调用）
+                        await sleep(350);
                         await resolveFace(rf, 1);
                     }
                 }
@@ -1125,17 +862,11 @@
 
             async function executeSupport(abilityName) {
                 if (abilityName === '长老') {
-                    if (game.coin < 3) {
-                        showToast('金币不足3，无法发动长老');
-                        return false;
-                    }
-                    game.coin -= 3;
-                    game.score += 4;
+                    if (game.coin < 3) { showToast('金币不足3，无法发动长老'); return false; }
+                    game.coin -= 3; game.score += 4;
                     showToast('长老：支付3金币，获得4分');
                 } else if (abilityName === '银鹿') {
-                    const ch = await showChoiceModal('银鹿：选择骰子', [
-                        { label: '左骰子' }, { label: '右骰子' }
-                    ]);
+                    const ch = await showChoiceModal('银鹿：选择骰子', [{ label: '左骰子' }, { label: '右骰子' }]);
                     if (ch < 0) return false;
                     const die = ch === 0 ? game.leftDie : game.rightDie;
                     const face = die[Math.floor(Math.random() * 6)];
@@ -1245,12 +976,12 @@
                     const ch = await showChoiceModal(extraPhase ? '额外行动阶段' : '主要行动阶段', choices);
                     if (ch === 0) {
                         if (!canEnterShop) continue;
-                        await enterShop();
-                        return true;
+                        const bought = await enterShop();
+                        if (bought) return true;
                     } else if (ch === 1) {
                         if (!canBuyHero) continue;
-                        await buyHero();
-                        return true;
+                        const bought = await buyHero();
+                        if (bought) return true;
                     } else {
                         return false;
                     }
@@ -1259,6 +990,7 @@
 
             async function enterShop() {
                 const boughtThisVisit = new Set();
+                let boughtAnything = false;
                 while (true) {
                     const available = SHOP_ITEMS.filter(item => {
                         if (item.limited && game.limitedBought.has(item.face)) return false;
@@ -1267,25 +999,27 @@
                         return true;
                     });
                     if (available.length === 0) {
-                        showToast('金币不足以购买任何可购骰面，商店关闭');
+                        if (boughtAnything) {
+                            showToast('无法继续购买，商店关闭');
+                        } else {
+                            showToast('金币不足以购买任何可购骰面');
+                        }
                         break;
                     }
                     renderAll();
-                    const ch = await showShopModal(available);
+                    const ch = await showShopModal(available, boughtAnything);
                     if (ch < 0) break;
                     const item = available[ch];
                     if (game.coin < item.price) { showToast('金币不足！'); continue; }
-                    setSelectableMode(true, async (die, idx) => {
+                    setSelectableMode(true, (die, idx) => {
                         setSelectableMode(false, null);
                         game.coin -= item.price;
                         const newFace = FACES[item.face];
-                        if (die === 'left') {
-                            game.leftDie[idx] = newFace;
-                        } else {
-                            game.rightDie[idx] = newFace;
-                        }
+                        if (die === 'left') game.leftDie[idx] = newFace;
+                        else game.rightDie[idx] = newFace;
                         boughtThisVisit.add(item.face);
                         if (item.limited) game.limitedBought.add(item.face);
+                        boughtAnything = true;
                         showToast(`已购买 ${newFace.name}`);
                         renderAll();
                     });
@@ -1302,15 +1036,16 @@
                 }
                 setSelectableMode(false, null);
                 renderAll();
+                return boughtAnything;
             }
 
             async function buyHero() {
                 const ch = await showHeroModal();
-                if (ch < 0) return;
+                if (ch < 0) return false;
                 const hero = HEROES[ch];
                 if (!game.payCost(hero.cost)) {
                     showToast('资源不足！');
-                    return;
+                    return false;
                 }
                 game.heroesBought.push(hero.name);
                 showToast(`购买了 ${hero.name}！`);
@@ -1318,6 +1053,7 @@
                     await triggerImmediate(hero);
                 }
                 renderAll();
+                return true;
             }
 
             async function triggerImmediate(hero) {
@@ -1356,7 +1092,7 @@
                         await sleep(300);
                     }
                 } else if (hero.id === 'helm') {
-                    setSelectableMode(true, async (die, idx) => {
+                    setSelectableMode(true, (die, idx) => {
                         setSelectableMode(false, null);
                         const newFace = FACES['三倍'];
                         if (die === 'left') game.leftDie[idx] = newFace;
@@ -1374,9 +1110,7 @@
                         }, 200);
                     });
                 } else if (hero.id === 'chest') {
-                    game.redCap += 3;
-                    game.blueCap += 3;
-                    game.coinCap += 4;
+                    game.redCap += 3; game.blueCap += 3; game.coinCap += 4;
                     showToast('宝箱：红色上限+3，蓝色上限+3，金币上限+4');
                 } else if (hero.id === 'hammer') {
                     if (game.hammerCap === 0) game.hammerTrack = 0;
@@ -1409,6 +1143,7 @@
                         await resolveFace(lf, 1);
                     } else {
                         await resolveFace(lf, 1);
+                        await sleep(350);
                         await resolveFace(rf, 1);
                     }
                 }
@@ -1417,7 +1152,6 @@
             async function endGame() {
                 game.phase = '游戏结束';
                 renderAll();
-                // 清除可能残留的恢复按钮
                 const oldRestore = document.getElementById('modalRestoreBtn');
                 if (oldRestore) oldRestore.remove();
                 await showBanner('游戏结束！');
@@ -1438,8 +1172,7 @@
                         <p><b>🏆 已购买英雄（按次序）：</b></p>
                         <div style="display:flex;flex-wrap:wrap;gap:6px;">`;
                 for (let i = 0; i < game.heroesBought.length; i++) {
-                    summaryHTML +=
-                        `<span style="background:var(--card-bg);padding:4px 10px;border-radius:6px;">${game.heroesBought[i]}</span>`;
+                    summaryHTML += `<span style="background:var(--card-bg);padding:4px 10px;border-radius:6px;">${game.heroesBought[i]}</span>`;
                 }
                 summaryHTML += `</div>
                         <p style="font-size:1.5em;text-align:center;margin-top:16px;"><b>🏅 最终总分：${totalScore}</b></p>
@@ -1452,23 +1185,7 @@
                 await runGame();
             }
 
-            function showModalSimple(title, content, btnText) {
-                return new Promise(resolve => {
-                    modalContainer.innerHTML = `
-                        <div class="modal-overlay">
-                            <div class="modal">
-                                <h3>${title}</h3>
-                                <div>${content}</div>
-                                <button class="close-btn" id="modalCloseBtn">${btnText}</button>
-                            </div>
-                        </div>`;
-                    document.getElementById('modalCloseBtn').onclick = function() {
-                        modalContainer.innerHTML = '';
-                        resolve();
-                    };
-                });
-            }
-
+            // 启动
             renderAll();
             setTimeout(() => runGame(), 500);
         })();
